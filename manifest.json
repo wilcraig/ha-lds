@@ -7,5 +7,7 @@
   "requirements": [],
   "dependencies": [],
   "codeowners": ["@b-k-a"],
-  "config_flow": true
+  "config_flow": true,
+  "logo": "assets/Christ-Church-Symbol.png",
+  "iot_class": "cloud_polling"
 }

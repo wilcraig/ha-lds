@@ -8,25 +8,25 @@ startString = (
   "/study/manual/come-follow-me-for-home-and-church-doctrine-and-covenants-2025/"
 )
 
-def get_current_data(language="eng", resource="Come, Follow Me"):
+async def get_current_data(hass, language="eng", resource="Come, Follow Me"):
   try:
     # Map resource to actual URLs or endpoints
     url_header = f"https://www.churchofjesuschrist.org"
-    resource_paths = (
+    resource_paths = {
       "Come, Follow Me": f"/study/manual/come-follow-me-for-home-and-church-doctrine-and-covenants-2025"
-    )
+    }
     url_footer = f"?lang={language}"
 
     url = url_header + resource_paths.get(resource, "/study/scripures") + url_footer
-    response = requests.get(url)
 
     if resource == "Come, Follow Me":
-      return get_current_lesson(url, response)
+      return await hass.async_add_executor_job(get_current_lesson, url)
   except Exception as err:
-    logging.get_Logger(__name__).error("Scraping error: %s", err)
+    logging.getLogger(__name__).error("Scraping error: %s", err)
     return {}
 
-def get_current_lesson(url, response):
+def get_current_lesson(url):
+  response = requests.get(url)
   soup = BeautifulSoup(response.content, "html.parser")
   today = datetime.now().date()
 

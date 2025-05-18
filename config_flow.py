@@ -25,6 +25,7 @@ class LDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     return self.async_show_form(
       step_id="user",
       data_schema=vol.Schema({
+        vol.Required(CONF_NAME, default="Church of Jesus Christ of Latter-day Saints"): str,
         vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): str,
         vol.Required(CONF_RESOURCE, default=DEFAULT_RESOURCE): vol.In(["Come, Follow Me"])
       })
