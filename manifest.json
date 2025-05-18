@@ -1,0 +1,11 @@
+{
+  "domain": "lds",
+  "name": "Church of Jesus Christ of Latter-day Saints",
+  "version": "1.0.0",
+  "documentation": "https://github.com/b-k-a/ha-lds",
+  "issue_tracker": "https://github.com/b-k-a/ha-lds/issues",
+  "requirements": [],
+  "dependencies": [],
+  "codeowners": ["@b-k-a"],
+  "config_flow": true
+}
