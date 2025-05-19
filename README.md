@@ -11,6 +11,7 @@ This integration will provide you with up-to-date info from the Church of Jesus 
 - Press ADD
 - Search for "Church of Jesus Christ of Latter-day Saints" in the search bar
 - Click on the repository and hit the "Download" button
+- Restart Home Assistant
 
 #### Manual Install
 - Download the latest release
