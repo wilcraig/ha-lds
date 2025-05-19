@@ -12,9 +12,15 @@ This integration will provide you with up-to-date info from the Church of Jesus 
 - Search for "Church of Jesus Christ of Latter-day Saints" in the search bar
 - Click on the repository and hit the "Download" button
 
+#### Manual Install
+- Download the latest release
+- Extract the folder lds to <config>/custom_components/
+- Restart Home Assistant
+
 ### Tasks In-progress:
 - Login to allow user-specific accessibility
 - Lovelace card for enhanced viewing
+- Expand to more languages
 
 ### Important attributes:
 | Attribute | Path |
