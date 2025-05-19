@@ -29,3 +29,18 @@ This integration will provide you with up-to-date info from the Church of Jesus 
 | Come, Follow Me data | state->loaderData->routes/my-home/dashboard->widgetData->cfm |
 | Daily Verse | state->loaderData->routes/my-home/dashboard->widgetData->daily->scripture |
 | Daily Quote | state->loaderData->routes/my-home/dashboard->widgetData->daily->quote |
+
+### Example Scripture of the Day markdown card
+    type: markdown
+    content: >-
+      {{ state_attr('sensor.lds_eng',
+      'state')['loaderData']['routes/my-home/dashboard']['widgetData']['daily']['scripture']['text']
+      }}
+
+
+      [{{ state_attr('sensor.lds_eng',
+      'state')['loaderData']['routes/my-home/dashboard']['widgetData']['daily']['scripture']['title']
+      }}](https://churchofjesuschrist.org{{ state_attr('sensor.lds_eng',
+      'state')['loaderData']['routes/my-home/dashboard']['widgetData']['daily']['scripture']['uri']
+      }})
+    title: Scripture of the Day
