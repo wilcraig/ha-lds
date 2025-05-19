@@ -1,7 +1,7 @@
 import voluptuous as vol
 from homeassistant import config_entries
 from homeassistant.const import CONF_NAME
-from .const import DOMAIN, CONF_LANGUAGE, CONF_RESOURCE, DEFAULT_LANGUAGE, DEFAULT_RESOURCE
+from .const import DOMAIN, CONF_LANGUAGE, DEFAULT_LANGUAGE
 import logging
 
 _LOGGER = logging.getLogger(__name__)
@@ -26,7 +26,6 @@ class LDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
       step_id="user",
       data_schema=vol.Schema({
         vol.Required(CONF_NAME, default="Church of Jesus Christ of Latter-day Saints"): str,
-        vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): str,
-        vol.Required(CONF_RESOURCE, default=DEFAULT_RESOURCE): vol.In(["Come, Follow Me"])
+        vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): str
       })
     )

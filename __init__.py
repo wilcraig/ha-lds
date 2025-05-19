@@ -9,7 +9,6 @@ from .const import (
     DEFAULT_TIMEOUT, 
     DEFAULT_REFRESH_RATE,
     CONF_LANGUAGE,
-    CONF_RESOURCE
 )
 
 from homeassistant.config_entries import ConfigEntry
@@ -51,7 +50,6 @@ class LDSDataUpdateCoordinator(DataUpdateCoordinator):
     
     def __init__(self, hass, config, entry: ConfigEntry=None):
         self.name = config.get(CONF_NAME, DOMAIN)
-        self.resource = config[CONF_RESOURCE]
         self.language = config[CONF_LANGUAGE]
         self.config = config
         self.hass = hass
@@ -76,12 +74,11 @@ class LDSDataUpdateCoordinator(DataUpdateCoordinator):
             
     async def async_update_display_data(self, config, hass) -> dict:
         sensor_name = self.name
-        resource = self.resource
         lang = self.language
         
-        key = resource + ":" + lang
+        key = lang
         
-        data = await get_current_data(self.hass, language=self.language, resource=self.resource)
+        data = await get_current_data(self.hass, language=self.language)
         self.data_cache[key] = data
         self.last_update[key] = arrow.now().format(arrow.FORMAT_W3C)
         
