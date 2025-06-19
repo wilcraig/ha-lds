@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import requests
 import logging
 import json
+import chardet
 
 async def get_current_data(hass, language="eng"):
   try:
@@ -16,6 +17,7 @@ async def get_current_data(hass, language="eng"):
   
 def get_current_lesson(url):
     response = requests.get(url)
+    response.encoding = chardet.detect(response.content)["encoding"]
     soup = BeautifulSoup(response.text, 'html.parser')
     
     script = soup.find('script', string=lambda t: t and "__remixContext" in t)
