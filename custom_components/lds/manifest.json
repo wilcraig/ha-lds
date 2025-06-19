@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "documentation": "https://github.com/b-k-a/ha-lds",
   "issue_tracker": "https://github.com/b-k-a/ha-lds/issues",
-  "requirements": [],
+  "requirements": ["chardet==3.0.4"],
   "dependencies": [],
   "codeowners": ["@b-k-a"],
   "config_flow": true,
