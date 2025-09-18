@@ -2,11 +2,72 @@
   "config": {
     "step": {
       "user": {
-        "title": "Configure LDS Scripture Sensor",
-        "description": "Choose language",
+        "title": "LDS Integration Setup",
+        "description": "Configure the Church of Jesus Christ of Latter-day Saints integration.\n\nVersion: {version}\nSupported Languages: {supported_languages}",
         "data": {
-          "language": "Language (e.g. eng, spa, ...)"        }
+          "name": "Integration Name",
+          "language": "Language",
+          "data_source": "Data Source Version",
+          "show_version_info": "Show version information in sensor attributes"
+        },
+        "data_description": {
+          "name": "Friendly name for this integration instance",
+          "language": "Language for content (affects scripture, quotes, and study materials)",
+          "data_source": "Choose data source version (current recommended for most users)",
+          "show_version_info": "Include integration version and metadata in sensor attributes"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure LDS Integration",
+        "description": "Update your LDS integration settings.\n\nCurrent Version: {version}\nCurrent Language: {current_language}",
+        "data": {
+          "name": "Integration Name",
+          "language": "Language",
+          "data_source": "Data Source Version",
+          "show_version_info": "Show version information"
+        }
       }
+    },
+    "error": {
+      "invalid_language": "Selected language is not supported",
+      "cannot_connect": "Failed to connect to Church website",
+      "timeout": "Timeout connecting to Church website",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "Integration is already configured for this language",
+      "cannot_connect": "Failed to connect to Church website"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "LDS Integration Options",
+        "description": "Configure options for the LDS integration",
+        "data": {
+          "update_interval": "Update interval (minutes)",
+          "show_version_info": "Show version information",
+          "data_source": "Data Source Version"
+        }
+      }
+    }
+  },
+  "entity": {
+    "sensor": {
+      "lds": {
+        "name": "LDS {language}",
+        "state": {
+          "up": "Connected",
+          "down": "No Data",
+          "unavailable": "Unavailable"
+        }
+      }
+    }
+  },
+  "services": {
+    "refresh_data": {
+      "name": "Refresh LDS Data",
+      "description": "Manually refresh data for LDS entities"
     }
   }
 }

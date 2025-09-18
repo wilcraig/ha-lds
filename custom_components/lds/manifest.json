@@ -1,13 +1,16 @@
 {
   "domain": "lds",
   "name": "Church of Jesus Christ of Latter-day Saints",
-  "version": "1.0.0",
-  "documentation": "https://github.com/b-k-a/ha-lds",
-  "issue_tracker": "https://github.com/b-k-a/ha-lds/issues",
-  "requirements": ["chardet==3.0.4"],
+  "version": "2.0.0",
+  "documentation": "https://github.com/wilcraig/ha-lds",
+  "issue_tracker": "https://github.com/wilcraig/ha-lds/issues",
+  "requirements": ["chardet==3.0.4", "beautifulsoup4==4.12.3", "requests==2.31.0"],
   "dependencies": [],
-  "codeowners": ["@b-k-a"],
+  "codeowners": ["@wilcraig"],
   "config_flow": true,
   "logo": "images/Christ-Church-Symbol.png",
-  "iot_class": "cloud_polling"
+  "iot_class": "cloud_polling",
+  "integration_type": "service",
+  "after_dependencies": [],
+  "homeassistant": "2023.7.0"
 }

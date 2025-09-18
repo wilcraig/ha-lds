@@ -1,0 +1,10 @@
+{
+  "name": "Church of Jesus Christ of Latter-day Saints",
+  "hacs": "1.32.0",
+  "domains": ["sensor"],
+  "iot_class": "Cloud Polling",
+  "render_readme": true,
+  "zip_release": true,
+  "filename": "ha-lds.zip",
+  "hide_default_branch": false
+}

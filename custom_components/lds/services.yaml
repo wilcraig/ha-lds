@@ -1,0 +1,27 @@
+refresh_data:
+  name: Refresh LDS Data
+  description: Manually refresh data for LDS entities
+  fields:
+    entity_id:
+      name: Entity ID
+      description: LDS sensor entity to refresh (optional, defaults to all LDS entities)
+      required: false
+      selector:
+        entity:
+          domain: sensor
+          integration: lds
+
+get_version_info:
+  name: Get Version Information
+  description: Get detailed version and integration information
+  response:
+    supported: true
+  fields:
+    entity_id:
+      name: Entity ID
+      description: LDS sensor entity to get version info from
+      required: true
+      selector:
+        entity:
+          domain: sensor
+          integration: lds
