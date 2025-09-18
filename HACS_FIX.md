@@ -15,7 +15,7 @@ The HACS download 404 error has been resolved! The integration now properly supp
 
 1. Open HACS in Home Assistant
 2. Go to Integrations
-3. Click the three dots → Custom repositories  
+3. Click the three dots → Custom repositories
 4. Add: `https://github.com/wilcraig/ha-lds`
 5. Category: Integration
 6. Click "Add" then "Install"

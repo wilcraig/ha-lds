@@ -2,6 +2,22 @@
 
 All notable changes to the LDS Home Assistant Integration will be documented in this file.
 
+## [2.0.1] - 2025-09-18
+
+### 🐛 Bug Fixes
+
+#### Fixed Dependency Conflicts
+- **Resolved installation issues** caused by strict version pinning in dependencies
+- Changed from `requests==2.31.0` to `requests>=2.28.0` to prevent conflicts with Home Assistant's package versions
+- Updated `beautifulsoup4==4.12.3` to `beautifulsoup4>=4.12.0` for better compatibility
+- Updated `chardet==3.0.4` to `chardet>=3.0.4` to maintain minimum requirements
+- This fixes the error: "Unable to install package requests==2.31.0: No solution found when resolving dependencies"
+
+#### Technical Improvements
+- More flexible dependency management following Home Assistant best practices
+- Future-proof package requirements that work with newer Home Assistant versions
+- Better compatibility with HACS installation process
+
 ## [2.0.0] - 2025-09-18
 
 ### 🎉 Major Release - Complete Overhaul

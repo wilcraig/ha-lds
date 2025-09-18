@@ -26,9 +26,9 @@ jobs:
           echo "Creating release notes for version ${{ steps.version.outputs.version }}"
           cat > release_notes.md << 'EOF'
           ## 🎉 LDS Integration v${{ steps.version.outputs.version }}
-          
+
           A comprehensive Home Assistant integration bringing spiritual content from The Church of Jesus Christ of Latter-day Saints to your smart home.
-          
+
           ### 🚀 Installation via HACS
           1. Open HACS in Home Assistant
           2. Go to Integrations
@@ -36,7 +36,7 @@ jobs:
           4. Add: `https://github.com/wilcraig/ha-lds`
           5. Category: Integration
           6. Install and restart Home Assistant
-          
+
           ### ✨ Features
           - Daily Scripture with direct links
           - Daily Inspirational Quotes
@@ -45,20 +45,20 @@ jobs:
           - 4 Beautiful Custom Lovelace Cards
           - Multi-language support (9 languages)
           - Professional version management
-          
+
           ### 📱 Custom Cards
           - LDS Quote Card - Purple gradient with daily quotes
           - LDS Scripture Card - Pink gradient with scriptures
           - LDS Come Follow Me Card - Blue gradient with study materials
           - LDS Inspirational Card - Orange gradient with picture quotes
-          
+
           ### 🔧 Setup
           1. Go to Settings → Devices & Services
           2. Click Add Integration
           3. Search for "Church of Jesus Christ"
           4. Configure language and preferences
           5. Add custom cards to your dashboard
-          
+
           See the [README](https://github.com/wilcraig/ha-lds#readme) for complete setup instructions and examples.
           EOF
 

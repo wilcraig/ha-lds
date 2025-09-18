@@ -3,7 +3,7 @@
 ## Issue
 The integration was experiencing dependency conflicts with the `requests` package:
 ```
-Unable to install package requests==2.31.0: × No solution found when resolving dependencies: 
+Unable to install package requests==2.31.0: × No solution found when resolving dependencies:
 ╰─▶ Because you require requests==2.31.0 and requests==2.32.4, we can conclude that your requirements are unsatisfiable.
 ```
 
