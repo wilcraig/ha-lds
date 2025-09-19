@@ -253,6 +253,10 @@ template:
   - sensor:
       - name: "Scripture Reference"
         state: >
-          {% set scripture = state_attr('sensor.lds_eng', 'state')['loaderData']['routes/my-home/dashboard']['widgetData']['daily']['scripture'] %}
-          {{ scripture.title }}
+          {% set scripture_data = state_attr('sensor.lds_eng', 'loaderData') %}
+          {% if scripture_data and scripture_data.get('routes/my-home/dashboard', {}).get('widgetData', {}).get('daily', {}).get('scripture') %}
+            {{ scripture_data['routes/my-home/dashboard']['widgetData']['daily']['scripture']['title'] }}
+          {% else %}
+            Scripture not available
+          {% endif %}
 ```

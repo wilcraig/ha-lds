@@ -213,9 +213,15 @@ automation:
       data:
         title: "Today's Scripture"
         message: >
-          {{ state_attr('sensor.lds_eng', 'state')['loaderData']['routes/my-home/dashboard']['widgetData']['daily']['scripture']['text'] }}
+          {% set scripture_data = state_attr('sensor.lds_eng', 'loaderData') %}
+          {% if scripture_data and scripture_data.get('routes/my-home/dashboard', {}).get('widgetData', {}).get('daily', {}).get('scripture') %}
+            {% set scripture = scripture_data['routes/my-home/dashboard']['widgetData']['daily']['scripture'] %}
+            {{ scripture.text }}
 
-          - {{ state_attr('sensor.lds_eng', 'state')['loaderData']['routes/my-home/dashboard']['widgetData']['daily']['scripture']['title'] }}
+            - {{ scripture.title }}
+          {% else %}
+            Scripture not available at this time.
+          {% endif %}
 ```
 
 ### Weekly Come Follow Me Reminder
@@ -236,9 +242,15 @@ automation:
         message: >
           Time for Come, Follow Me study!
 
-          {{ state_attr('sensor.lds_eng', 'state')['loaderData']['routes/my-home/dashboard']['widgetData']['cfm']['title'] }}
+          {% set cfm_data = state_attr('sensor.lds_eng', 'loaderData') %}
+          {% if cfm_data and cfm_data.get('routes/my-home/dashboard', {}).get('widgetData', {}).get('cfm') %}
+            {% set cfm = cfm_data['routes/my-home/dashboard']['widgetData']['cfm'] %}
+            {{ cfm.title }}
 
-          Study dates: {{ state_attr('sensor.lds_eng', 'state')['loaderData']['routes/my-home/dashboard']['widgetData']['cfm']['dateRange'] }}
+            Study dates: {{ cfm.dateRange }}
+          {% else %}
+            Come, Follow Me study materials not available at this time.
+          {% endif %}
 ```
 
 ## 🛠️ Troubleshooting
