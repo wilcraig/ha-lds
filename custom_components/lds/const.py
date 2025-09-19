@@ -2,7 +2,7 @@ from homeassistant.const import Platform
 from datetime import timedelta
 
 DOMAIN = "lds"
-VERSION = "2.0.1"
+VERSION = "2.0.2"
 
 CONF_LANGUAGE = "language"
 

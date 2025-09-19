@@ -94,7 +94,7 @@ class LDSSensor(CoordinatorEntity):
         attrs["integration_version"] = VERSION
         attrs["integration_name"] = INTEGRATION_INFO["name"]
         attrs["language"] = self._entry.data[CONF_LANGUAGE]
-        attrs["last_updated"] = self.coordinator.last_update_success_time
+        attrs["last_updated"] = self.coordinator.last_update_success
 
         # Add all the LDS data
         attrs.update(data)

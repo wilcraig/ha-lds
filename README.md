@@ -56,6 +56,24 @@ A comprehensive Home Assistant integration that brings inspirational content fro
 2. Extract the `lds` folder to `<config>/custom_components/`
 3. Restart Home Assistant
 
+## ⚠️ IMPORTANT: Custom Cards Setup Required
+
+**After installing the integration, you MUST register the custom cards as resources or they won't work!**
+
+If you see errors like "Custom element doesn't exist: lds-scripture-card", follow these steps:
+
+1. **Register Resources** - Go to **Settings** → **Dashboards** → **Resources**
+2. **Add each card** as a JavaScript Module:
+   - `/local/community/ha-lds/lds-quote-card.js`
+   - `/local/community/ha-lds/lds-scripture-card.js`
+   - `/local/community/ha-lds/lds-come-follow-me-card.js`
+   - `/local/community/ha-lds/lds-inspirational-card.js`
+3. **Restart Home Assistant** (required!)
+4. **Clear browser cache** (Ctrl+F5 or Cmd+Shift+R)
+
+📖 **See [CARDS_SETUP.md](CARDS_SETUP.md) for detailed instructions**
+🔧 **See [TROUBLESHOOTING.md](TROUBLESHOOTING.md) if you have issues**
+
 ## ⚙️ Configuration
 
 1. Go to **Settings** → **Devices & Services**

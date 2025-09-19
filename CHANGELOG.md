@@ -2,6 +2,48 @@
 
 All notable changes to the LDS Home Assistant Integration will be documented in this file.
 
+## [2.0.2] - 2025-09-18
+
+### 🐛 Critical Bug Fixes
+
+#### Fixed Sensor AttributeError
+- **Resolved sensor loading crash** caused by incorrect attribute name
+- Fixed `AttributeError: 'LDSDataUpdateCoordinator' object has no attribute 'last_update_success_time'`
+- Changed to correct attribute name `last_update_success`
+- Sensor now loads properly without errors
+
+#### Fixed Template Processing Errors  
+- **Resolved template crashes** with robust null-safe syntax
+- Fixed `UndefinedError: 'None' has no attribute 'loaderData'` in automation examples
+- Updated all template examples with proper null checking
+- Templates now gracefully handle sensor loading states and missing data
+
+### 📚 Enhanced Documentation
+
+#### Comprehensive Setup Instructions
+- **Added prominent warnings** about required resource registration for custom cards
+- Enhanced CARDS_SETUP.md with step-by-step UI instructions
+- Created comprehensive TROUBLESHOOTING.md guide covering common issues
+- Updated README.md with immediate setup warnings and clear instructions
+
+#### Custom Cards Documentation
+- Clear explanation of "Custom element doesn't exist" errors and solutions
+- Step-by-step resource registration process
+- Verification steps and restart requirements
+- Browser cache clearing instructions
+
+#### Template Documentation
+- Safe template examples with null checking
+- Migration guide from problematic templates
+- Best practices for robust automation templates
+- Diagnostic commands for troubleshooting
+
+### 🔧 User Experience Improvements
+- **Clearer error messages** and troubleshooting steps
+- **Better setup flow** preventing common configuration mistakes
+- **Comprehensive troubleshooting** covering installation, cards, and templates
+- **Faster issue resolution** with detailed diagnostic guides
+
 ## [2.0.1] - 2025-09-18
 
 ### 🐛 Bug Fixes

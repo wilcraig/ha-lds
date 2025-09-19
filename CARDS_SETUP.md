@@ -2,44 +2,77 @@
 
 This guide will help you set up the beautiful custom Lovelace cards that come with the LDS integration.
 
-## 📁 File Placement
+## ⚠️ IMPORTANT: Resource Registration Required
 
-After installing the integration, you'll need to copy the card files to your Home Assistant's `www` folder:
+**The custom cards MUST be registered as resources in Home Assistant before they can be used!**
 
-### Method 1: Manual Copy
+If you see errors like "Custom element doesn't exist: lds-scripture-card", it means the resources aren't properly registered.
+
+## 📁 Step 1: File Placement
+
+After installing the integration via HACS, the card files should automatically be in the correct location.
+
+If manual installation, copy all `.js` files from the integration to your `www` folder:
+
+### HACS Installation (Automatic)
+Files are automatically placed in: `config/www/community/ha-lds/`
+
+### Manual Installation
 1. Copy all `.js` files from `custom_components/lds/www/` to `config/www/community/ha-lds/`
 2. Create the folders if they don't exist
 
-### Method 2: Via File Editor
-1. Go to **File Editor** add-on
-2. Navigate to `www/community/`
-3. Create folder `ha-lds`
-4. Upload the card files
+## 🔧 Step 2: Register Resources (CRITICAL STEP)
 
-## 🔧 Lovelace Resource Configuration
+**This step is REQUIRED or the cards won't work!**
 
-Add these resources to your Lovelace configuration:
-
-### Via UI (Recommended)
+### Method A: Via Home Assistant UI (Recommended)
 1. Go to **Settings** → **Dashboards**
-2. Click the three dots and select **Resources**
+2. Click the **three dots menu** (⋮) and select **Resources**
 3. Click **+ Add Resource**
-4. Add each URL below as type "JavaScript Module"
+4. Add each of these URLs one by one:
 
-### Via YAML
-Add to your `ui-lovelace.yaml` or dashboard YAML:
+   ```
+   /local/community/ha-lds/lds-quote-card.js
+   /local/community/ha-lds/lds-scripture-card.js
+   /local/community/ha-lds/lds-come-follow-me-card.js
+   /local/community/ha-lds/lds-inspirational-card.js
+   ```
+
+5. For each resource, set **Resource type** to **JavaScript Module**
+6. Restart Home Assistant after adding all resources
+
+### Method B: Via YAML Configuration
+Add to your `configuration.yaml` under the `lovelace:` section:
 
 ```yaml
-resources:
-  - url: /local/community/ha-lds/lds-quote-card.js
-    type: module
-  - url: /local/community/ha-lds/lds-scripture-card.js
-    type: module
-  - url: /local/community/ha-lds/lds-come-follow-me-card.js
-    type: module
-  - url: /local/community/ha-lds/lds-inspirational-card.js
-    type: module
+lovelace:
+  resources:
+    - url: /local/community/ha-lds/lds-quote-card.js
+      type: module
+    - url: /local/community/ha-lds/lds-scripture-card.js
+      type: module
+    - url: /local/community/ha-lds/lds-come-follow-me-card.js
+      type: module
+    - url: /local/community/ha-lds/lds-inspirational-card.js
+      type: module
 ```
+
+Then restart Home Assistant.
+
+## 🔄 Step 3: Restart Home Assistant
+
+**After registering resources, you MUST restart Home Assistant!**
+
+1. Go to **Settings** → **System** → **Restart**
+2. Wait for restart to complete
+3. Clear your browser cache (Ctrl+F5 or Cmd+Shift+R)
+
+## ✅ Step 4: Verify Installation
+
+After restart, check that resources are loaded:
+1. Go to **Settings** → **Dashboards** → **Resources**
+2. You should see all 4 LDS card resources listed
+3. Try adding a card to test
 
 ## 📋 Card Configuration Examples
 
