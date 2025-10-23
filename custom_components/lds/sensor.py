@@ -26,14 +26,14 @@ async def async_setup_entry(
 ) -> None:
     """Set up LDS sensors based on a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-    
+
     sensors = [
         LDSScriptureSensor(coordinator, entry),
         LDSQuoteSensor(coordinator, entry),
         LDSComeFollowMeSensor(coordinator, entry),
         LDSInspirationalImageSensor(coordinator, entry),
     ]
-    
+
     async_add_entities(sensors, True)
 class LDSBaseSensor(CoordinatorEntity, SensorEntity):
     """Base class for LDS sensors."""

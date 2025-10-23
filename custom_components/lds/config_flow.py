@@ -22,7 +22,7 @@ SUPPORTED_LANGUAGES = {
 # Data source versions (removed - no longer needed in v3.0)
 # DATA_SOURCE_VERSIONS = {
 #     "current": "Current (Latest)",
-#     "stable": "Stable (Tested)", 
+#     "stable": "Stable (Tested)",
 #     "beta": "Beta (Preview)",
 # }
 

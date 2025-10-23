@@ -4,7 +4,7 @@
 
 ### Custom Card Files (No Longer Needed)
 - `www/lds-come-follow-me-card.js`
-- `www/lds-inspirational-card.js` 
+- `www/lds-inspirational-card.js`
 - `www/lds-quote-card.js`
 - `www/lds-scripture-card.js`
 - `www/` directory (entire directory removed)
@@ -12,7 +12,7 @@
 ### Obsolete Documentation
 - `CARDS_SETUP.md` - Custom card setup instructions
 - `CARDS_SETUP_LEGACY.md` - Legacy card setup
-- `CARDS_SETUP_NEW.md` - New card setup  
+- `CARDS_SETUP_NEW.md` - New card setup
 - `DEPENDENCY_FIX.md` - Dependency conflict fixes
 - `EXAMPLES.md` - Old usage examples
 - `HACS_FIX.md` - HACS installation fixes
@@ -28,7 +28,7 @@
 
 ### Core Integration Files
 - `custom_components/lds/__init__.py` - ✅ Updated for v3.0
-- `custom_components/lds/sensor.py` - ✅ Completely rewritten  
+- `custom_components/lds/sensor.py` - ✅ Completely rewritten
 - `custom_components/lds/get_data.py` - ✅ Completely rewritten
 - `custom_components/lds/const.py` - ✅ Updated constants
 - `custom_components/lds/manifest.json` - ✅ Updated dependencies
@@ -47,7 +47,7 @@
 - `CONTRIBUTING.md` - ✅ Kept for contributors
 - `LICENSE` - ✅ Kept
 
-### New Documentation  
+### New Documentation
 - `MARKDOWN_CARDS_EXAMPLES.md` - ✅ New comprehensive examples
 - `MIGRATION_GUIDE.md` - ✅ New migration help
 

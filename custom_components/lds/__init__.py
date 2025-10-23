@@ -22,7 +22,7 @@ class LDSDataUpdateCoordinator(DataUpdateCoordinator):
         """Initialize the coordinator."""
         self.language = language
         self.fetcher = LDSDataFetcher(language)
-        
+
         super().__init__(
             hass,
             _LOGGER,
@@ -39,10 +39,10 @@ class LDSDataUpdateCoordinator(DataUpdateCoordinator):
             data["come_follow_me"] = await self.fetcher.get_come_follow_me(self.hass)
             data["inspirational"] = await self.fetcher.get_inspirational_image(self.hass)
             data["last_updated"] = datetime.now().isoformat()
-            
+
             _LOGGER.debug("Successfully fetched LDS data for language: %s", self.language)
             return data
-            
+
         except Exception as err:
             _LOGGER.error("Error fetching LDS data: %s", err)
             raise UpdateFailed(f"Error communicating with LDS API: {err}") from err

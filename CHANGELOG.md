@@ -2,6 +2,125 @@
 
 All notable changes to the LDS Home Assistant Integration will be documented in this file.
 
+## [4.0.0] - 2025-10-23
+
+### 🎉 MAJOR RELEASE - Enhanced Content Platform
+
+#### 🆕 New Features
+
+##### Church Newsroom Integration
+- **Added `get_church_newsroom_headlines()`** - Fetches latest church news articles
+- **Rich media support** - Includes article images, descriptions, and publication dates
+- **Configurable limit** - Get up to 5 latest headlines (default)
+- **Full article links** - Direct links to complete news stories
+
+##### Featured Content Integration  
+- **Added `get_featured_content()`** - Extracts highlighted church content
+- **Comprehensive metadata** - Titles, descriptions, categories (pretitle), and images
+- **Curated content** - Church-featured articles, videos, and resources
+- **Direct access links** - Links to full featured content
+
+##### Enhanced Data Structure
+- **Updated sensor data** - Now includes `newsroom_headlines` and `featured_content` arrays
+- **Unified data source** - All content parsed from My Home page JSON data
+- **Consistent structure** - Standardized data format across all content types
+
+#### 📰 New Markdown Card Examples
+
+##### Church News Summary Card
+- **Full-featured news display** - Headlines with images and descriptions
+- **Publication dates** - Shows when articles were published
+- **Responsive images** - Properly sized and styled news images
+- **Read more links** - Direct access to full articles
+
+##### Featured Content Card
+- **Rich content display** - Titles, categories, descriptions, and images
+- **Visual appeal** - Professional card layout with featured images
+- **Category indicators** - Shows content source/type (pretitle)
+- **Learn more links** - Direct access to featured resources
+
+##### Layout Variations
+- **Compact News Card** - Single column, condensed layout
+- **Featured Content Grid** - Multi-column grid display
+- **All-in-One Dashboard** - Combined view with all content types
+- **Complete Dashboard View** - Horizontal stack layouts
+
+#### 🔄 Enhanced My Home Page Integration
+
+##### Improved JSON Parsing
+- **Comprehensive data extraction** - Newsroom, featured content, prophetic messages
+- **Better error handling** - Robust parsing with fallbacks
+- **URL validation** - Ensures all links are properly formatted
+- **Image optimization** - Proper image URL handling
+
+##### Data Source Migration
+- **Scripture parsing** - Now uses My Home page JSON data
+- **Quote extraction** - Enhanced quote parsing from multiple sources
+- **Unified approach** - Single data source for all content types
+- **Real-time updates** - Fresh content from church's My Home page
+
+#### 📚 Comprehensive Documentation Updates
+
+##### Enhanced Card Examples
+- **Rich media examples** - Cards with images, styling, and responsive design
+- **Multiple layout options** - From compact to full-featured displays
+- **Styling guides** - Examples with card-mod integration
+- **Copy-paste ready** - Complete YAML configurations
+
+##### Usage Guidelines
+- **Best practices** - Recommended card configurations
+- **Performance tips** - Optimal settings for different use cases
+- **Troubleshooting** - Common issues and solutions
+- **Mobile optimization** - Responsive design examples
+
+### 🔧 Technical Improvements
+
+#### Code Organization
+- **New methods** - Clean separation of newsroom and featured content logic
+- **Enhanced error handling** - Comprehensive exception management
+- **Better logging** - Improved debugging capabilities
+- **Consistent patterns** - Unified approach across all data fetchers
+
+#### Data Processing
+- **JSON parsing optimization** - Efficient extraction from My Home page data
+- **URL sanitization** - Proper handling of relative and absolute URLs
+- **Image processing** - Optimized image URL handling
+- **Content validation** - Ensures data quality and completeness
+
+### ✨ Benefits
+
+#### Enhanced User Experience
+- **Richer content** - More diverse church content in dashboards
+- **Visual appeal** - Professional layouts with images and styling
+- **Current information** - Real-time news and featured content
+- **Easy setup** - Copy-paste card configurations
+
+#### Technical Advantages
+- **Single data source** - Simplified maintenance and updates
+- **Improved reliability** - Better error handling and fallbacks
+- **Performance optimized** - Efficient JSON parsing and processing
+- **Future-proof** - Uses standard church website JSON API
+
+### 🎯 Use Cases
+
+#### News Dashboard
+- Display latest church news headlines
+- Show featured church content
+- Create news-focused layouts
+- Mobile-friendly news consumption
+
+#### Complete Church Dashboard
+- All-in-one spiritual content display
+- Scripture, quotes, news, and featured content
+- Comprehensive daily church content
+- Rich media integration
+
+#### Specialized Layouts
+- News-only cards for current events
+- Featured content for church resources
+- Grid layouts for visual appeal
+- Compact layouts for space efficiency
+
 ## [3.0.1] - 2025-10-23
 
 ### 🐛 Critical Bug Fixes

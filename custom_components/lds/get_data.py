@@ -23,25 +23,71 @@ class LDSDataFetcher:
     async def get_daily_scripture(self, hass):
         """Get the daily scripture from the church website."""
         try:
-            url = f"https://www.churchofjesuschrist.org/study/scriptures"
+            url = f"https://www.churchofjesuschrist.org/my-home?lang={self.language}"
             response = await hass.async_add_executor_job(self._get_url, url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            page_content = response.text
 
-            # Look for featured scripture or daily reading
-            scripture_element = soup.find('div', class_='featured-content') or soup.find('div', class_='daily-scripture')
+            # Look for JSON data in script tag
+            script_start = page_content.find('window.__remixContext')
+            if script_start != -1:
+                script_start = page_content.find('{', script_start)
+                script_end = page_content.find(';}', script_start)
 
-            if scripture_element:
-                text = scripture_element.get_text(strip=True)
-                # Try to extract reference
-                reference_element = scripture_element.find('cite') or scripture_element.find('span', class_='reference')
-                reference = reference_element.get_text(strip=True) if reference_element else "Scripture of the Day"
+                if script_start != -1 and script_end != -1:
+                    json_str = page_content[script_start:script_end + 1]
+                    data = json.loads(json_str)
 
-                return {
-                    "text": text,
-                    "reference": reference,
-                    "url": url,
-                    "date": datetime.now().strftime("%Y-%m-%d")
-                }
+                    # Look for Come Follow Me data which often contains scripture
+                    cfm_data = data.get('loaderData', {}).get('routes/my-home/dashboard', {}).get('cfm', {})
+                    if cfm_data:
+                        title = cfm_data.get('title', '')
+                        primary_meta = cfm_data.get('primaryMeta', '')
+                        uri = cfm_data.get('uri', '')
+
+                        # Create a scripture reference from CFM data
+                        if title and primary_meta:
+                            reference = f"{primary_meta} - {title}"
+                            scripture_url = f"https://www.churchofjesuschrist.org{uri}" if uri else url
+
+                            return {
+                                "text": f"This week's Come Follow Me study: {title}",
+                                "reference": reference,
+                                "url": scripture_url,
+                                "date": datetime.now().strftime("%Y-%m-%d")
+                            }
+
+                    # Look for prophetic messages that might contain scripture quotes
+                    prophetic_data = data.get('loaderData', {}).get('routes/my-home/dashboard', {}).get('propheticMessages', {}).get('items', [])
+                    if prophetic_data:
+                        item = prophetic_data[0]
+                        title = item.get('title', '')
+                        description = item.get('description', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
+
+                        if title and description:
+                            return {
+                                "text": description[:300] + "..." if len(description) > 300 else description,
+                                "reference": title,
+                                "url": link_url if link_url.startswith('http') else url,
+                                "date": datetime.now().strftime("%Y-%m-%d")
+                            }
+
+                    # Look for featured content that might contain scripture
+                    featured_data = data.get('loaderData', {}).get('routes/my-home/dashboard', {}).get('moreFeatures', {}).get('items', [])
+                    for item in featured_data:
+                        description = item.get('description', '')
+                        title = item.get('title', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
+
+                        # Look for scripture-related content
+                        if any(keyword in description.lower() for keyword in ['scripture', 'verse', 'doctrine', 'covenants', 'book of mormon']):
+                            return {
+                                "text": description[:300] + "..." if len(description) > 300 else description,
+                                "reference": title,
+                                "url": link_url if link_url.startswith('http') else url,
+                                "date": datetime.now().strftime("%Y-%m-%d")
+                            }
+
         except Exception as err:
             _LOGGER.warning("Error fetching daily scripture: %s", err)
 
@@ -51,32 +97,87 @@ class LDSDataFetcher:
     async def get_daily_quote(self, hass):
         """Get an inspirational quote from church leaders."""
         try:
-            # Try to get quotes from general conference talks
-            url = f"https://www.churchofjesuschrist.org/study/general-conference"
+            url = f"https://www.churchofjesuschrist.org/my-home?lang={self.language}"
             response = await hass.async_add_executor_job(self._get_url, url)
-            soup = BeautifulSoup(response.text, 'html.parser')
+            page_content = response.text
 
-            # Look for featured quotes or talks
-            quote_elements = soup.find_all('blockquote') or soup.find_all('div', class_='quote')
+            # Look for JSON data in script tag
+            script_start = page_content.find('window.__remixContext')
+            if script_start != -1:
+                script_start = page_content.find('{', script_start)
+                script_end = page_content.find(';}', script_start)
 
-            if quote_elements:
-                quote_element = random.choice(quote_elements)
-                quote_text = quote_element.get_text(strip=True)
+                if script_start != -1 and script_end != -1:
+                    json_str = page_content[script_start:script_end + 1]
+                    data = json.loads(json_str)
 
-                # Try to find author nearby
-                author_element = (quote_element.find_next('cite') or
-                                quote_element.find_previous('h3') or
-                                quote_element.find_parent().find('h3'))
+                    # Look for "Quote of the Day" data
+                    widgets_data = data.get('loaderData', {}).get('routes/my-home/dashboard', {})
 
-                author = author_element.get_text(strip=True) if author_element else "Church Leader"
+                    # Look in prophetic messages first
+                    prophetic_data = widgets_data.get('propheticMessages', {}).get('items', [])
+                    if prophetic_data:
+                        item = prophetic_data[0]
+                        title = item.get('title', '')
+                        description = item.get('description', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
 
-                return {
-                    "text": quote_text,
-                    "author": author,
-                    "source": "General Conference",
-                    "url": url,
-                    "date": datetime.now().strftime("%Y-%m-%d")
-                }
+                        if description and title:
+                            return {
+                                "text": description,
+                                "author": "Church Leader",
+                                "source": title,
+                                "url": link_url if link_url.startswith('http') else url,
+                                "date": datetime.now().strftime("%Y-%m-%d")
+                            }
+
+                    # Look in featured content for quotes
+                    featured_data = widgets_data.get('moreFeatures', {}).get('items', [])
+                    for item in featured_data:
+                        description = item.get('description', '')
+                        title = item.get('title', '')
+                        pretitle = item.get('pretitle', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
+
+                        # Look for quote-like content
+                        if description and any(keyword in description.lower() for keyword in ['"', 'said', 'teach', 'testament', 'faith', 'hope', 'love']):
+                            author = "Church Leader"
+                            source = pretitle if pretitle else "The Church of Jesus Christ of Latter-day Saints"
+
+                            # Try to determine author from title or content
+                            if 'president' in title.lower() or 'elder' in title.lower():
+                                author = title
+                                source = "General Conference"
+                            elif 'conference' in pretitle.lower():
+                                source = "General Conference"
+                            elif 'liahona' in pretitle.lower():
+                                source = "Liahona Magazine"
+
+                            return {
+                                "text": description,
+                                "author": author,
+                                "source": source,
+                                "url": link_url if link_url.startswith('http') else url,
+                                "date": datetime.now().strftime("%Y-%m-%d")
+                            }
+
+                    # Look in news items for inspirational content
+                    news_data = widgets_data.get('newsroom', {}).get('newsItems', [])
+                    for item in news_data:
+                        description = item.get('description', '')
+                        title = item.get('title', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
+
+                        # Look for inspiring news content
+                        if description and len(description) > 50 and len(description) < 400:
+                            return {
+                                "text": description,
+                                "author": "Church Newsroom",
+                                "source": "Church News",
+                                "url": link_url if link_url.startswith('http') else url,
+                                "date": datetime.now().strftime("%Y-%m-%d")
+                            }
+
         except Exception as err:
             _LOGGER.warning("Error fetching daily quote: %s", err)
 
@@ -168,6 +269,111 @@ class LDSDataFetcher:
             "date": datetime.now().strftime("%Y-%m-%d")
         }
 
+    async def get_church_newsroom_headlines(self, hass, limit=5):
+        """Get church newsroom headlines with images and links."""
+        try:
+            url = f"https://www.churchofjesuschrist.org/my-home?lang={self.language}"
+            response = await hass.async_add_executor_job(self._get_url, url)
+            page_content = response.text
+
+            # Look for JSON data in script tag
+            script_start = page_content.find('window.__remixContext')
+            if script_start != -1:
+                script_start = page_content.find('{', script_start)
+                script_end = page_content.find(';}', script_start)
+
+                if script_start != -1 and script_end != -1:
+                    json_str = page_content[script_start:script_end + 1]
+                    data = json.loads(json_str)
+
+                    # Extract newsroom data
+                    widgets_data = data.get('loaderData', {}).get('routes/my-home/dashboard', {})
+                    newsroom_data = widgets_data.get('newsroom', {})
+                    news_items = newsroom_data.get('newsItems', [])
+
+                    headlines = []
+                    for item in news_items[:limit]:
+                        title = item.get('title', '')
+                        description = item.get('description', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
+                        image_url = item.get('imageUrl', '')
+                        publish_date = item.get('publishDate', '')
+
+                        # Make sure URLs are absolute
+                        if link_url and not link_url.startswith('http'):
+                            link_url = f"https://www.churchofjesuschrist.org{link_url}"
+                        if image_url and not image_url.startswith('http'):
+                            image_url = f"https://www.churchofjesuschrist.org{image_url}"
+
+                        if title:
+                            headlines.append({
+                                "title": title,
+                                "description": description,
+                                "link_url": link_url,
+                                "image_url": image_url,
+                                "publish_date": publish_date,
+                                "fetched_date": datetime.now().strftime("%Y-%m-%d")
+                            })
+
+                    return headlines
+
+        except Exception as err:
+            _LOGGER.warning("Error fetching church newsroom headlines: %s", err)
+
+        return []
+
+    async def get_featured_content(self, hass, limit=5):
+        """Get featured content with titles, links, and images."""
+        try:
+            url = f"https://www.churchofjesuschrist.org/my-home?lang={self.language}"
+            response = await hass.async_add_executor_job(self._get_url, url)
+            page_content = response.text
+
+            # Look for JSON data in script tag
+            script_start = page_content.find('window.__remixContext')
+            if script_start != -1:
+                script_start = page_content.find('{', script_start)
+                script_end = page_content.find(';}', script_start)
+
+                if script_start != -1 and script_end != -1:
+                    json_str = page_content[script_start:script_end + 1]
+                    data = json.loads(json_str)
+
+                    # Extract featured content data
+                    widgets_data = data.get('loaderData', {}).get('routes/my-home/dashboard', {})
+                    featured_data = widgets_data.get('moreFeatures', {}).get('items', [])
+
+                    featured_items = []
+                    for item in featured_data[:limit]:
+                        title = item.get('title', '')
+                        description = item.get('description', '')
+                        pretitle = item.get('pretitle', '')
+                        link_url = item.get('link', {}).get('linkUrl', '')
+                        image_url = item.get('imageUrl', '')
+
+                        # Make sure URLs are absolute
+                        if link_url and not link_url.startswith('http'):
+                            link_url = f"https://www.churchofjesuschrist.org{link_url}"
+                        if image_url and not image_url.startswith('http'):
+                            image_url = f"https://www.churchofjesuschrist.org{image_url}"
+
+                        if title:
+                            featured_items.append({
+                                "title": title,
+                                "description": description,
+                                "pretitle": pretitle,
+                                "link_url": link_url,
+                                "image_url": image_url,
+                                "fetched_date": datetime.now().strftime("%Y-%m-%d")
+                            })
+
+                    return featured_items
+
+        except Exception as err:
+            _LOGGER.warning("Error fetching featured content: %s", err)
+
+        return []
+
     def _get_url(self, url):
         """Get URL content with error handling."""
         response = self.session.get(url, timeout=30)
@@ -250,12 +456,16 @@ async def get_current_data(hass, language="eng"):
     quote = await fetcher.get_daily_quote(hass)
     come_follow_me = await fetcher.get_come_follow_me(hass)
     inspirational = await fetcher.get_inspirational_image(hass)
+    newsroom_headlines = await fetcher.get_church_newsroom_headlines(hass)
+    featured_content = await fetcher.get_featured_content(hass)
 
     return {
         "scripture": scripture,
         "quote": quote,
         "come_follow_me": come_follow_me,
         "inspirational": inspirational,
+        "newsroom_headlines": newsroom_headlines,
+        "featured_content": featured_content,
         "language": language,
         "last_updated": datetime.now().isoformat()
     }
