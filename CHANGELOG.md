@@ -2,6 +2,62 @@
 
 All notable changes to the LDS Home Assistant Integration will be documented in this file.
 
+## [3.0.1] - 2025-10-23
+
+### 🐛 Critical Bug Fixes
+
+#### Fixed Coordinator Import Issues
+- **Resolved circular import** between `__init__.py` and `sensor.py`
+- Moved `LDSDataUpdateCoordinator` to proper location in `__init__.py`
+- Removed duplicate coordinator class from `sensor.py`
+- Fixed type hints using `TYPE_CHECKING` to avoid runtime import issues
+- **This resolves the issue where sensors weren't being created properly**
+
+### 🔧 Code Quality Improvements
+- Added `.gitignore` to exclude Python cache files
+- Improved import structure and removed circular dependencies
+- Better separation of concerns between modules
+
+## [3.0.0] - 2025-10-23
+
+### 🎉 MAJOR RELEASE - Complete Rewrite
+
+#### ⚠️ BREAKING CHANGES
+- **Custom JavaScript cards removed** - Now uses standard markdown cards
+- **Single sensor replaced** with multiple focused sensors
+- **Installation process simplified** - No custom card management needed
+- **Data structure changed** - See migration guide for details
+
+#### 🆕 New Features
+- **Multiple focused sensors**:
+  - `sensor.lds_daily_scripture_eng` - Daily scripture with text and reference
+  - `sensor.lds_daily_quote_eng` - Inspirational quotes from church leaders
+  - `sensor.lds_come_follow_me_eng` - Current Come Follow Me lesson info
+  - `sensor.lds_inspirational_image_eng` - Inspirational images with quotes
+- **Standard markdown cards** with beautiful styling examples
+- **Improved data fetching** with fallback content for reliability
+- **Better error handling** and logging throughout
+- **Simplified architecture** using standard HA patterns
+
+#### 🗑️ Removed
+- Custom JavaScript card files (`www/` directory)
+- Complex web scraping of internal church website data
+- Frontend resource registration system
+- Multiple obsolete documentation files
+- Custom installation scripts
+
+#### 📚 New Documentation
+- `MARKDOWN_CARDS_EXAMPLES.md` - Comprehensive card examples with styling
+- `MIGRATION_GUIDE.md` - Step-by-step upgrade guide from v2.x
+- `CLEANUP_SUMMARY.md` - Documentation of cleanup process
+
+#### ✨ Benefits
+- **More reliable**: No custom JavaScript dependencies
+- **Better performance**: Native HA rendering
+- **Universal compatibility**: Works on all devices and apps
+- **Future-proof**: Uses standard HA patterns
+- **Easier maintenance**: Simpler, cleaner codebase
+
 ## [2.0.2] - 2025-09-18
 
 ### 🐛 Critical Bug Fixes

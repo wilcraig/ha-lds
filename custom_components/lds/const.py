@@ -3,7 +3,7 @@ from datetime import timedelta
 from homeassistant.const import Platform
 
 DOMAIN = "lds"
-VERSION = "3.0.0"
+VERSION = "3.0.1"
 
 CONF_LANGUAGE = "language"
 DEFAULT_LANGUAGE = "eng"
