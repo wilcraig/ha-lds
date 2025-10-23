@@ -23,13 +23,18 @@ All data is available through the `sensor.lds_data` entity with appropriate attr
 type: markdown
 title: 📖 Scripture of the Day
 content: |
-  **{{ state_attr('sensor.lds_data', 'scripture')['reference'] }}**
+  {% set scripture_data = state_attr('sensor.lds_data', 'scripture') %}
+  {% if scripture_data and scripture_data.reference %}
+  **{{ scripture_data.reference }}**
 
-  *{{ state_attr('sensor.lds_data', 'scripture')['text'] }}*
+  *{{ scripture_data.text }}*
 
-  [Read More]({{ state_attr('sensor.lds_data', 'scripture')['url'] }})
+  [Read More]({{ scripture_data.url }})
 
-  *Updated: {{ state_attr('sensor.lds_data', 'scripture')['date'] }}*
+  *Updated: {{ scripture_data.date }}*
+  {% else %}
+  *Scripture loading...*
+  {% endif %}
 ```
 
 ### 2. Daily Quote Card
@@ -38,13 +43,18 @@ content: |
 type: markdown
 title: 💬 Inspirational Quote
 content: |
-  > {{ state_attr('sensor.lds_data', 'quote')['text'] }}
+  {% set quote_data = state_attr('sensor.lds_data', 'quote') %}
+  {% if quote_data and quote_data.text %}
+  > {{ quote_data.text }}
 
-  **— {{ state_attr('sensor.lds_data', 'quote')['author'] }}**
+  **— {{ quote_data.author }}**
 
-  *{{ state_attr('sensor.lds_data', 'quote')['source'] }}*
+  *{{ quote_data.source }}*
 
-  [Read More]({{ state_attr('sensor.lds_data', 'quote')['url'] }})
+  [Read More]({{ quote_data.url }})
+  {% else %}
+  *Quote loading...*
+  {% endif %}
 ```
 
 ### 3. Come Follow Me Card
@@ -53,13 +63,18 @@ content: |
 type: markdown
 title: 📚 Come, Follow Me
 content: |
-  ## {{ state_attr('sensor.lds_data', 'come_follow_me')['title'] }}
+  {% set cfm_data = state_attr('sensor.lds_data', 'come_follow_me') %}
+  {% if cfm_data and cfm_data.title %}
+  ## {{ cfm_data.title }}
 
-  **Reading:** {{ state_attr('sensor.lds_data', 'come_follow_me')['reading'] }}
+  **Reading:** {{ cfm_data.reading }}
 
-  **Dates:** {{ state_attr('sensor.lds_data', 'come_follow_me')['date_range'] }}
+  **Dates:** {{ cfm_data.date_range }}
 
-  [View Lesson]({{ state_attr('sensor.lds_data', 'come_follow_me')['url'] }})
+  [View Lesson]({{ cfm_data.url }})
+  {% else %}
+  *Come Follow Me lesson loading...*
+  {% endif %}
 ```
 
 ### 4. Inspirational Image Card
@@ -68,15 +83,20 @@ content: |
 type: markdown
 title: 🖼️ Inspirational Image
 content: |
-  ### {{ state_attr('sensor.lds_data', 'inspirational')['title'] }}
+  {% set image_data = state_attr('sensor.lds_data', 'inspirational') %}
+  {% if image_data and image_data.title %}
+  ### {{ image_data.title }}
 
-  {% if state_attr('sensor.lds_data', 'inspirational')['image_url'] %}
-  <img src="{{ state_attr('sensor.lds_data', 'inspirational')['image_url'] }}" alt="{{ state_attr('sensor.lds_data', 'inspirational')['title'] }}" style="width: 100%; border-radius: 8px;">
+  {% if image_data.image_url %}
+  <img src="{{ image_data.image_url }}" alt="{{ image_data.title }}" style="width: 100%; border-radius: 8px;">
   {% endif %}
 
-  *From: {{ state_attr('sensor.lds_data', 'inspirational')['collection'] }}*
+  *From: {{ image_data.collection }}*
 
-  [View Full Size]({{ state_attr('sensor.lds_data', 'inspirational')['page_url'] }})
+  [View Full Size]({{ image_data.page_url }})
+  {% else %}
+  *Inspirational image loading...*
+  {% endif %}
 ```
 
 ## New: Church News Summary Card
@@ -85,9 +105,11 @@ content: |
 type: markdown
 title: 📰 Church News Headlines
 content: |
+  {% set news_data = state_attr('sensor.lds_data', 'newsroom_headlines') %}
+  {% if news_data and news_data|length > 0 %}
   ### Latest Church News
 
-  {% for headline in state_attr('sensor.lds_data', 'newsroom_headlines') %}
+  {% for headline in news_data %}
   {% if loop.index <= 5 %}
 
   #### {{ headline.title }}
@@ -108,6 +130,9 @@ content: |
 
   {% endif %}
   {% endfor %}
+  {% else %}
+  *Church news loading...*
+  {% endif %}
 ```
 
 ## New: Featured Content Card
@@ -116,9 +141,11 @@ content: |
 type: markdown
 title: ⭐ Featured Church Content
 content: |
+  {% set featured_data = state_attr('sensor.lds_data', 'featured_content') %}
+  {% if featured_data and featured_data|length > 0 %}
   ### Featured Content
 
-  {% for item in state_attr('sensor.lds_data', 'featured_content') %}
+  {% for item in featured_data %}
   {% if loop.index <= 3 %}
 
   #### {{ item.title }}
@@ -139,6 +166,9 @@ content: |
 
   {% endif %}
   {% endfor %}
+  {% else %}
+  *Featured content loading...*
+  {% endif %}
 ```
 
 ## Compact Layout Examples
@@ -149,7 +179,9 @@ content: |
 type: markdown
 title: Church News
 content: |
-  {% for headline in state_attr('sensor.lds_data', 'newsroom_headlines') %}
+  {% set news_data = state_attr('sensor.lds_data', 'newsroom_headlines') %}
+  {% if news_data and news_data|length > 0 %}
+  {% for headline in news_data %}
   {% if loop.index <= 3 %}
 
   **{{ headline.title }}**
@@ -162,6 +194,9 @@ content: |
 
   {% endif %}
   {% endfor %}
+  {% else %}
+  *Church news loading...*
+  {% endif %}
 ```
 
 ### Featured Content Grid Card
@@ -170,9 +205,11 @@ content: |
 type: markdown
 title: Featured Content
 content: |
+  {% set featured_data = state_attr('sensor.lds_data', 'featured_content') %}
+  {% if featured_data and featured_data|length > 0 %}
   <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
 
-  {% for item in state_attr('sensor.lds_data', 'featured_content') %}
+  {% for item in featured_data %}
   {% if loop.index <= 4 %}
 
   <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px; background: #f9f9f9;">
@@ -197,6 +234,9 @@ content: |
   {% endfor %}
 
   </div>
+  {% else %}
+  *Featured content loading...*
+  {% endif %}
 ```
 
 ## All-in-One LDS Dashboard Card
@@ -205,47 +245,58 @@ content: |
 type: markdown
 title: ⛪ LDS Daily Dashboard
 content: |
+  {% set scripture_data = state_attr('sensor.lds_data', 'scripture') %}
+  {% set quote_data = state_attr('sensor.lds_data', 'quote') %}
+  {% set cfm_data = state_attr('sensor.lds_data', 'come_follow_me') %}
+  {% set news_data = state_attr('sensor.lds_data', 'newsroom_headlines') %}
+  
+  {% if scripture_data and scripture_data.reference %}
   ## Daily Scripture
 
-  ### {{ state_attr('sensor.lds_data', 'scripture')['reference'] }}
+  ### {{ scripture_data.reference }}
 
-  {{ state_attr('sensor.lds_data', 'scripture')['text'] }}
+  {{ scripture_data.text }}
 
-  [Read More]({{ state_attr('sensor.lds_data', 'scripture')['url'] }})
+  [Read More]({{ scripture_data.url }})
 
   ---
+  {% endif %}
 
+  {% if quote_data and quote_data.text %}
   ## Inspirational Quote
 
-  > {{ state_attr('sensor.lds_data', 'quote')['text'] }}
+  > {{ quote_data.text }}
 
-  **—{{ state_attr('sensor.lds_data', 'quote')['author'] }}**
+  **—{{ quote_data.author }}**
 
   ---
+  {% endif %}
 
+  {% if cfm_data and cfm_data.title %}
   ## Come Follow Me
 
-  **{{ state_attr('sensor.lds_data', 'come_follow_me')['title'] }}**
-  *{{ state_attr('sensor.lds_data', 'come_follow_me')['reading'] }}*
+  **{{ cfm_data.title }}**  
+  *{{ cfm_data.reading }}*
 
-  [Study Guide]({{ state_attr('sensor.lds_data', 'come_follow_me')['url'] }})
+  [Study Guide]({{ cfm_data.url }})
 
   ---
+  {% endif %}
 
+  {% if news_data and news_data|length > 0 %}
   ## Latest Church News
 
-  {% for headline in state_attr('sensor.lds_data', 'newsroom_headlines') %}
+  {% for headline in news_data %}
   {% if loop.index <= 2 %}
 
-  **{{ headline.title }}**
-  {{ headline.description[:120] }}{% if headline.description|length > 120 %}...{% endif %}
+  **{{ headline.title }}**  
+  {{ headline.description[:120] }}{% if headline.description|length > 120 %}...{% endif %}  
   [Read More]({{ headline.link_url }})
 
   {% endif %}
   {% endfor %}
-```
-
-## Dashboard Layout Examples
+  {% endif %}
+```## Dashboard Layout Examples
 
 ### Complete Dashboard View
 
@@ -334,3 +385,23 @@ If data appears as "Unknown" or attributes are missing:
 4. Try reloading the integration from the Integrations page
 
 The integration includes comprehensive fallback data, so you should always see some content even if the church website is temporarily unavailable.
+
+### Template Errors
+
+If you see errors like `UndefinedError: 'None' has no attribute 'reference'`, it means the sensor data hasn't loaded yet or is None. All the examples above include null-safe templates that will show "loading..." messages instead of errors.
+
+**Key points for safe templates:**
+- Always check if data exists before accessing properties
+- Use `{% set variable = state_attr('sensor.lds_data', 'attribute') %}` to store data
+- Check with `{% if variable and variable.property %}`
+- Provide fallback content for loading states
+
+**Example of safe template pattern:**
+```yaml
+{% set scripture_data = state_attr('sensor.lds_data', 'scripture') %}
+{% if scripture_data and scripture_data.reference %}
+  {{ scripture_data.reference }} - {{ scripture_data.text }}
+{% else %}
+  *Scripture loading...*
+{% endif %}
+```
