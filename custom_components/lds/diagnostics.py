@@ -74,10 +74,10 @@ async def async_get_config_entry_diagnostics(
         "runtime_data": {
             "data_available": coordinator.data is not None,
             "data_size": len(str(coordinator.data)) if coordinator.data else 0,
-            "has_scripture": bool(coordinator.data and coordinator.data.get("loaderData", {}).get("routes/my-home/dashboard", {}).get("widgetData", {}).get("daily", {}).get("scripture")),
-            "has_quote": bool(coordinator.data and coordinator.data.get("loaderData", {}).get("routes/my-home/dashboard", {}).get("widgetData", {}).get("daily", {}).get("quote")),
-            "has_cfm": bool(coordinator.data and coordinator.data.get("loaderData", {}).get("routes/my-home/dashboard", {}).get("widgetData", {}).get("cfm")),
-            "has_inspirational": bool(coordinator.data and coordinator.data.get("inspirational_picture_quote")),
+            "has_scripture": bool(coordinator.data and coordinator.data.get("scripture")),
+            "has_quote": bool(coordinator.data and coordinator.data.get("quote")),
+            "has_come_follow_me": bool(coordinator.data and coordinator.data.get("come_follow_me")),
+            "has_inspirational": bool(coordinator.data and coordinator.data.get("inspirational")),
         }
     }
 

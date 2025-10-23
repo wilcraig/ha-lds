@@ -1,94 +1,61 @@
+"""The LDS integration."""
 import logging
-import arrow
-from async_timeout import timeout
-
-from .get_data import get_current_data
-from .services import async_setup_services, async_unload_services
-from .const import (
-    DOMAIN,
-    PLATFORMS,
-    DEFAULT_TIMEOUT,
-    DEFAULT_REFRESH_RATE,
-    CONF_LANGUAGE,
-)
 
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.const import CONF_NAME
+from homeassistant.const import Platform
+from homeassistant.core import HomeAssistant
+
+from .const import DOMAIN, PLATFORMS, CONF_LANGUAGE
+from .sensor import LDSDataUpdateCoordinator
+from .services import async_setup_services, async_unload_services
 
 _LOGGER = logging.getLogger(__name__)
 
-async def async_setup_entry(hass, entry):
-  _LOGGER.debug("Forwarding LDS config entry to sensor platform")
 
-  #hass.data.setdefault(DOMAIN, {})[entry.entry_id] = entry.data
-  hass.data.setdefault(DOMAIN, {})
-  coordinator = LDSDataUpdateCoordinator(
-    hass, entry.data, entry
-  )
+async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Set up LDS from a config entry."""
+    _LOGGER.debug("Setting up LDS integration for language: %s", entry.data[CONF_LANGUAGE])
 
-  await coordinator.async_refresh()
+    # Initialize the coordinator
+    coordinator = LDSDataUpdateCoordinator(hass, entry.data[CONF_LANGUAGE])
 
-  hass.data[DOMAIN][entry.entry_id] = {
-      "coordinator": coordinator,
-  }
+    # Fetch initial data
+    await coordinator.async_config_entry_first_refresh()
 
-  # Setup services
-  await async_setup_services(hass)
+    # Store coordinator in hass data
+    hass.data.setdefault(DOMAIN, {})
+    hass.data[DOMAIN][entry.entry_id] = {
+        "coordinator": coordinator,
+    }
 
-  hass.async_create_task(
-    hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-  )
-  return True
+    # Setup services
+    await async_setup_services(hass)
 
-async def async_unload_entry(hass, entry):
-  unload_ok = await hass.config_entries.async_forward_entry_unload(entry, "sensor")
-  if unload_ok:
-    hass.data[DOMAIN].pop(entry.entry_id)
-    # Unload services if this is the last entry
-    if not hass.data[DOMAIN]:
-      await async_unload_services(hass)
-  return unload_ok
+    # Forward entry setup to platforms
+    await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
-class LDSDataUpdateCoordinator(DataUpdateCoordinator):
-    data_cache = {}
-    last_update = {}
-    c_cache = {}
+    return True
 
-    def __init__(self, hass, config, entry: ConfigEntry=None):
-        self.name = config.get(CONF_NAME, DOMAIN)
-        self.language = config[CONF_LANGUAGE]
-        self.config = config
-        self.hass = hass
-        self.entry = entry
 
-        super().__init__(hass, _LOGGER, name=self.name, update_interval=DEFAULT_REFRESH_RATE)
-        _LOGGER.debug(
-            "%s: Using default refresh rate (%s)", self.name, self.update_interval
-        )
+async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Unload a config entry."""
+    _LOGGER.debug("Unloading LDS integration for language: %s", entry.data[CONF_LANGUAGE])
 
-    async def _async_update_data(self):
-        async with timeout(DEFAULT_TIMEOUT):
-            try:
-                data = await self.async_update_display_data(self.config, self.hass)
-            except Exception as error:
-                _LOGGER.debug("%s: Error updating data: %s", self.name, error)
-                _LOGGER.debug("%s: Error type: %s", self.name, type(error).__name__)
-                _LOGGER.debug("%s: Additional information: %s", self.name, str(error))
+    # Unload platforms
+    unload_ok = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
 
-                raise UpdateFailed(error) from error
-            return data
+    if unload_ok:
+        # Remove entry from hass data
+        hass.data[DOMAIN].pop(entry.entry_id)
 
-    async def async_update_display_data(self, config, hass) -> dict:
-        sensor_name = self.name
-        lang = self.language
+        # Unload services if this is the last entry
+        if not hass.data[DOMAIN]:
+            await async_unload_services(hass)
 
-        key = lang
+    return unload_ok
 
-        data = await get_current_data(self.hass, language=self.language)
-        self.data_cache[key] = data
-        self.last_update[key] = arrow.now().format(arrow.FORMAT_W3C)
 
-        _LOGGER.debug("Coordinator fetched data type=%s data=%s", type(data), data)
-
-        return data
+async def async_reload_entry(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Reload config entry."""
+    await async_unload_entry(hass, entry)
+    await async_setup_entry(hass, entry)

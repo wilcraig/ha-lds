@@ -12,7 +12,7 @@ All notable changes to the LDS Home Assistant Integration will be documented in 
 - Changed to correct attribute name `last_update_success`
 - Sensor now loads properly without errors
 
-#### Fixed Template Processing Errors  
+#### Fixed Template Processing Errors
 - **Resolved template crashes** with robust null-safe syntax
 - Fixed `UndefinedError: 'None' has no attribute 'loaderData'` in automation examples
 - Updated all template examples with proper null checking

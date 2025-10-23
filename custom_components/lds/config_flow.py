@@ -19,12 +19,12 @@ SUPPORTED_LANGUAGES = {
     "zho": "中文 (Chinese)",
 }
 
-# Data source versions (for future use)
-DATA_SOURCE_VERSIONS = {
-    "current": "Current (Latest)",
-    "stable": "Stable (Tested)",
-    "beta": "Beta (Preview)",
-}
+# Data source versions (removed - no longer needed in v3.0)
+# DATA_SOURCE_VERSIONS = {
+#     "current": "Current (Latest)",
+#     "stable": "Stable (Tested)", 
+#     "beta": "Beta (Preview)",
+# }
 
 class LDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
   """Handle a config flow for LDS Scripture."""
@@ -55,8 +55,6 @@ class LDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
       data_schema=vol.Schema({
         vol.Required(CONF_NAME, default="Church of Jesus Christ of Latter-day Saints"): str,
         vol.Required(CONF_LANGUAGE, default=DEFAULT_LANGUAGE): vol.In(SUPPORTED_LANGUAGES),
-        vol.Optional("data_source", default="current"): vol.In(DATA_SOURCE_VERSIONS),
-        vol.Optional("show_version_info", default=True): bool,
       }),
       errors=errors,
       description_placeholders={
@@ -82,8 +80,6 @@ class LDSConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
       data_schema=vol.Schema({
         vol.Required(CONF_NAME, default=current_config.get(CONF_NAME, "Church of Jesus Christ of Latter-day Saints")): str,
         vol.Required(CONF_LANGUAGE, default=current_config.get(CONF_LANGUAGE, DEFAULT_LANGUAGE)): vol.In(SUPPORTED_LANGUAGES),
-        vol.Optional("data_source", default=current_config.get("data_source", "current")): vol.In(DATA_SOURCE_VERSIONS),
-        vol.Optional("show_version_info", default=current_config.get("show_version_info", True)): bool,
       }),
       description_placeholders={
         "version": VERSION,
