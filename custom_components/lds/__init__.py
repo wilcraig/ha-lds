@@ -1,15 +1,51 @@
 """The LDS integration."""
 import logging
+from datetime import timedelta, datetime
 
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.const import Platform
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN, PLATFORMS, CONF_LANGUAGE
-from .sensor import LDSDataUpdateCoordinator
+from .get_data import LDSDataFetcher
 from .services import async_setup_services, async_unload_services
 
 _LOGGER = logging.getLogger(__name__)
+SCAN_INTERVAL = timedelta(hours=1)
+
+
+class LDSDataUpdateCoordinator(DataUpdateCoordinator):
+    """Coordinator for LDS data updates."""
+
+    def __init__(self, hass: HomeAssistant, language: str):
+        """Initialize the coordinator."""
+        self.language = language
+        self.fetcher = LDSDataFetcher(language)
+        
+        super().__init__(
+            hass,
+            _LOGGER,
+            name=f"lds_{language}",
+            update_interval=SCAN_INTERVAL,
+        )
+
+    async def _async_update_data(self):
+        """Fetch data from LDS sources."""
+        try:
+            data = {}
+            data["scripture"] = await self.fetcher.get_daily_scripture(self.hass)
+            data["quote"] = await self.fetcher.get_daily_quote(self.hass)
+            data["come_follow_me"] = await self.fetcher.get_come_follow_me(self.hass)
+            data["inspirational"] = await self.fetcher.get_inspirational_image(self.hass)
+            data["last_updated"] = datetime.now().isoformat()
+            
+            _LOGGER.debug("Successfully fetched LDS data for language: %s", self.language)
+            return data
+            
+        except Exception as err:
+            _LOGGER.error("Error fetching LDS data: %s", err)
+            raise UpdateFailed(f"Error communicating with LDS API: {err}") from err
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:

@@ -1,7 +1,7 @@
 """LDS integration sensors."""
 from datetime import timedelta, datetime
 import logging
-from typing import Any
+from typing import Any, TYPE_CHECKING
 
 from homeassistant.components.sensor import SensorEntity, SensorDeviceClass
 from homeassistant.config_entries import ConfigEntry
@@ -9,13 +9,14 @@ from homeassistant.const import CONF_NAME
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
-from homeassistant.helpers.update_coordinator import CoordinatorEntity, DataUpdateCoordinator, UpdateFailed
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN, CONF_LANGUAGE, VERSION, INTEGRATION_INFO
-from .get_data import LDSDataFetcher
+
+if TYPE_CHECKING:
+    from . import LDSDataUpdateCoordinator
 
 _LOGGER = logging.getLogger(__name__)
-SCAN_INTERVAL = timedelta(hours=1)
 
 
 async def async_setup_entry(
@@ -25,54 +26,19 @@ async def async_setup_entry(
 ) -> None:
     """Set up LDS sensors based on a config entry."""
     coordinator = hass.data[DOMAIN][entry.entry_id]["coordinator"]
-
+    
     sensors = [
         LDSScriptureSensor(coordinator, entry),
         LDSQuoteSensor(coordinator, entry),
         LDSComeFollowMeSensor(coordinator, entry),
         LDSInspirationalImageSensor(coordinator, entry),
     ]
-
+    
     async_add_entities(sensors, True)
-
-
-class LDSDataUpdateCoordinator(DataUpdateCoordinator):
-    """Coordinator for LDS data updates."""
-
-    def __init__(self, hass: HomeAssistant, language: str):
-        """Initialize the coordinator."""
-        self.language = language
-        self.fetcher = LDSDataFetcher(language)
-
-        super().__init__(
-            hass,
-            _LOGGER,
-            name=f"lds_{language}",
-            update_interval=SCAN_INTERVAL,
-        )
-
-    async def _async_update_data(self):
-        """Fetch data from LDS sources."""
-        try:
-            data = {}
-            data["scripture"] = await self.fetcher.get_daily_scripture(self.hass)
-            data["quote"] = await self.fetcher.get_daily_quote(self.hass)
-            data["come_follow_me"] = await self.fetcher.get_come_follow_me(self.hass)
-            data["inspirational"] = await self.fetcher.get_inspirational_image(self.hass)
-            data["last_updated"] = datetime.now().isoformat()
-
-            _LOGGER.debug("Successfully fetched LDS data for language: %s", self.language)
-            return data
-
-        except Exception as err:
-            _LOGGER.error("Error fetching LDS data: %s", err)
-            raise UpdateFailed(f"Error communicating with LDS API: {err}") from err
-
-
 class LDSBaseSensor(CoordinatorEntity, SensorEntity):
     """Base class for LDS sensors."""
 
-    def __init__(self, coordinator: LDSDataUpdateCoordinator, entry: ConfigEntry, sensor_type: str):
+    def __init__(self, coordinator: "LDSDataUpdateCoordinator", entry: ConfigEntry, sensor_type: str):
         """Initialize the sensor."""
         super().__init__(coordinator)
         self.entry = entry
@@ -111,7 +77,7 @@ class LDSBaseSensor(CoordinatorEntity, SensorEntity):
 class LDSScriptureSensor(LDSBaseSensor):
     """Sensor for daily scripture."""
 
-    def __init__(self, coordinator: LDSDataUpdateCoordinator, entry: ConfigEntry):
+    def __init__(self, coordinator: "LDSDataUpdateCoordinator", entry: ConfigEntry):
         """Initialize the scripture sensor."""
         super().__init__(coordinator, entry, "scripture")
         self._attr_name = f"LDS Daily Scripture ({self._language.upper()})"
@@ -145,7 +111,7 @@ class LDSScriptureSensor(LDSBaseSensor):
 class LDSQuoteSensor(LDSBaseSensor):
     """Sensor for inspirational quotes."""
 
-    def __init__(self, coordinator: LDSDataUpdateCoordinator, entry: ConfigEntry):
+    def __init__(self, coordinator: "LDSDataUpdateCoordinator", entry: ConfigEntry):
         """Initialize the quote sensor."""
         super().__init__(coordinator, entry, "quote")
         self._attr_name = f"LDS Daily Quote ({self._language.upper()})"
@@ -180,7 +146,7 @@ class LDSQuoteSensor(LDSBaseSensor):
 class LDSComeFollowMeSensor(LDSBaseSensor):
     """Sensor for Come Follow Me lessons."""
 
-    def __init__(self, coordinator: LDSDataUpdateCoordinator, entry: ConfigEntry):
+    def __init__(self, coordinator: "LDSDataUpdateCoordinator", entry: ConfigEntry):
         """Initialize the Come Follow Me sensor."""
         super().__init__(coordinator, entry, "come_follow_me")
         self._attr_name = f"LDS Come Follow Me ({self._language.upper()})"
@@ -215,7 +181,7 @@ class LDSComeFollowMeSensor(LDSBaseSensor):
 class LDSInspirationalImageSensor(LDSBaseSensor):
     """Sensor for inspirational images."""
 
-    def __init__(self, coordinator: LDSDataUpdateCoordinator, entry: ConfigEntry):
+    def __init__(self, coordinator: "LDSDataUpdateCoordinator", entry: ConfigEntry):
         """Initialize the inspirational image sensor."""
         super().__init__(coordinator, entry, "inspirational")
         self._attr_name = f"LDS Inspirational Image ({self._language.upper()})"
